@@ -28,4 +28,33 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
 
+    @IBAction func presentAudioRecordingUI() {
+
+        let filePaths = NSSearchPathForDirectoriesInDomains(
+            NSSearchPathDirectory.DocumentDirectory,
+            NSSearchPathDomainMask.UserDomainMask,
+            true)
+        let documentDir = filePaths.first!
+        let filePath = documentDir + "/rec.m4a"
+        let fileUrl = NSURL.fileURLWithPath(filePath)
+        print("filePath:\(filePath) fileUrl:\(filePath)")
+        
+        // 弹出录音界面，保存到指定URL
+        self.presentAudioRecordingControllerWithOutputURL(
+            fileUrl,
+            preset: WKAudioRecordingPreset.WideBandSpeech,
+            maximumDuration: NSTimeInterval.infinity, // 最长录音时间
+            actionTitle: "保存后播放") { (didSave, error) -> Void in
+                print("didSave:\(didSave), error:\(error)")
+                if (didSave) {
+                    // 保存后弹出播放界面，播放URL对应的音频文件
+                    self.presentMediaPlayerControllerWithURL(
+                        fileUrl,
+                        options: nil) { (didPlayToEnd, endTime, error) -> Void in
+                            
+                            print("didPlayToEnd:\(didPlayToEnd), endTime:\(endTime), error:\(error)")
+                    }
+                }
+        }
+    }
 }
