@@ -39,12 +39,18 @@ class InterfaceController: WKInterfaceController {
         let fileUrl = NSURL.fileURLWithPath(filePath)
         print("filePath:\(filePath) fileUrl:\(filePath)")
         
+        // 录音参数
+        let audioOptions = [
+            WKAudioRecorderControllerOptionsActionTitleKey  : "保存后播放",
+            WKAudioRecorderControllerOptionsAlwaysShowActionTitleKey : false,
+            WKAudioRecorderControllerOptionsAutorecordKey: false,
+            WKAudioRecorderControllerOptionsMaximumDurationKey: NSTimeInterval.infinity
+        ]
         // 弹出录音界面，保存到指定URL
-        self.presentAudioRecordingControllerWithOutputURL(
+        self.presentAudioRecorderControllerWithOutputURL(
             fileUrl,
-            preset: WKAudioRecordingPreset.WideBandSpeech,
-            maximumDuration: NSTimeInterval.infinity, // 最长录音时间
-            actionTitle: "保存后播放") { (didSave, error) -> Void in
+            preset: WKAudioRecorderPreset.NarrowBandSpeech,
+            options: audioOptions as [NSObject : AnyObject]) { (didSave, error) -> Void in
                 print("didSave:\(didSave), error:\(error)")
                 if (didSave) {
                     // 保存后弹出播放界面，播放URL对应的音频文件
